@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SecretPixel</title>
+  <meta name="description" content="Hide your secrets in plain sight. Steganography web app.">
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SecretPixel">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%237c3aed' rx='28' width='180' height='180'/><path fill='white' d='M90 45c-24.8 0-45 20.2-45 45 0 12.4 5 23.6 13.3 31.8V144c0 6.2 5 11.3 11.3 11.3h11.3c6.2 0 11.3-5 11.3-11.3v-15.2c8.3-8.1 13.3-19.3 13.3-31.5 0-24.8-20.2-45-45-45zm-11.3 72c-13.6 0-24.7-10.9-24.7-24.4s11-24.4 24.7-24.4 24.7 10.9 24.7 24.4-11 24.4-24.7 24.4z'/></svg>">
+  <link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 390 844'><rect fill='%237c3aed' width='390' height='844'/><circle cx='195' cy='380' r='60' fill='white'/></svg>">
+  <link rel="apple-touch-startup-image" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 428 926'><rect fill='%237c3aed' width='428' height='926'/><circle cx='214' cy='420' r='70' fill='white'/></svg>">
+  <link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px)" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 390 844'><rect fill='%237c3aed' width='390' height='844'/><circle cx='195' cy='380' r='60' fill='white'/></svg>">
+  <style>
+    html { background: #030712; }
+    @media (display-mode: standalone) { .pwa-install { display: none !important; } }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            gray: {
+              950: '#030712',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body class="font-inter bg-gray-950 text-gray-100 min-h-screen transition-colors duration-300">
+
+  <!-- Theme ripple overlay -->
+  <div id="messageRevealRipple" class="message-reveal-ripple bg-violet-500"></div>
+
+  <!-- Theme ripple overlay -->
+  <div id="themeRipple" class="theme-ripple"></div>
+
+  <!-- ========== HEADER ========== -->
+  <header class="sticky top-0 z-50 glass-header border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="logo-icon w-10 h-10 rounded-lg flex items-center justify-center bg-violet-600 shadow-lg shadow-violet-500/30 border border-violet-500/40">
+          <i class="fas fa-eye text-white text-lg"></i>
+        </div>
+        <div class="flex items-center">
+          <h1 class="text-xl font-extrabold tracking-wide text-violet-400">
+            SecretPixel
+          </h1>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <!-- Theme Toggle -->
+        <button id="themeToggle" class="ripple-btn w-10 h-10 rounded-xl glass-card flex items-center justify-center hover:scale-105 transition-transform" title="Toggle theme">
+          <i id="themeIcon" class="fas fa-moon text-violet-400 text-sm"></i>
+        </button>
+        <!-- PWA Install Button (Desktop only) -->
+        <button id="pwaInstallBtn" class="pwa-install ripple-btn w-10 h-10 rounded-xl glass-card flex items-center justify-center hover:scale-105 transition-transform hidden md:flex" title="Install App">
+          <i class="fas fa-download text-violet-400 text-sm"></i>
+        </button>
+        <!-- Mobile menu (desktop only) -->
+        <button id="mobileMenuBtn" class="ripple-btn w-10 h-10 rounded-xl glass-card flex items-center justify-center hidden md:flex">
+          <i class="fas fa-bars text-gray-300 text-sm"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== MOBILE NAV ========== -->
+  <div id="mobileNav" class="hidden md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm">
+    <div class="absolute right-0 top-0 h-full w-72 glass-sidebar flex flex-col p-6 gap-2">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-lg font-bold text-violet-400">Menu</span>
+        <button id="closeMobileNav" class="ripple-btn w-8 h-8 rounded-lg glass-card flex items-center justify-center">
+          <i class="fas fa-times text-gray-300 text-sm"></i>
+        </button>
+      </div>
+      <nav id="mobileNavLinks" class="flex flex-col gap-2"></nav>
+    </div>
+  </div>
+
+  <!-- ========== MAIN LAYOUT ========== -->
+  <div class="max-w-7xl mx-auto px-4 py-6 flex gap-6">
+
+    <!-- Sidebar (desktop) -->
+    <aside class="hidden md:flex flex-col gap-2 w-64 shrink-0 sticky top-20 h-fit">
+      <nav id="desktopNav" class="flex flex-col gap-1.5"></nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="flex-1 min-w-0 pb-24 md:pb-0">
+
+      <!-- ===== HERO SECTION ===== -->
+      <section id="section-home" class="section active mb-8">
+        <div class="hero-card glass-card rounded-2xl md:rounded-3xl p-4 md:p-12 relative overflow-hidden mb-6">
+          <div class="hero-bg-orb orb1"></div>
+          <div class="hero-bg-orb orb2"></div>
+          <div class="relative z-10">
+            <div class="hidden md:flex items-center gap-2 mb-4">
+              <span class="px-3 py-1 rounded-full text-xs font-semibold bg-violet-500/20 text-violet-300 border border-violet-500/30">
+                🔐 100% Client-Side
+              </span>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                🛡️ No Data Sent
+              </span>
+            </div>
+            <h2 class="text-2xl md:text-5xl font-extrabold mb-2 md:mb-4 leading-tight">
+              Hide your secrets
+              <span class="text-violet-400"> in plain sight.</span>
+            </h2>
+            <p class="text-gray-400 text-sm md:text-lg mb-4 md:mb-8 max-w-xl hidden">
+              Embed secret messages into text, images, audio, video, and documents — all processed locally on your device.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button class="ripple-btn nav-link px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl bg-violet-600 text-white font-semibold text-sm md:text-base shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 transition-all hover:scale-105" data-target="text">
+                <i class="fas fa-play mr-1 md:mr-2"></i><span class="hidden md:inline">Get Started</span><span class="md:hidden">Start</span>
+              </button>
+              <button class="ripple-btn nav-link px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl glass-card text-gray-300 font-semibold text-sm md:text-base hover:scale-105 transition-all" data-target="reveal">
+                <i class="fas fa-eye mr-1 md:mr-2"></i>Reveal
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode Cards Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div class="mode-card glass-card rounded-2xl p-5 cursor-pointer hover:scale-[1.02] transition-all nav-link ripple-btn" data-target="text">
+            <div class="w-12 h-12 rounded-xl bg-violet-500/20 flex items-center justify-center mb-3">
+              <i class="fas fa-font text-violet-400 text-xl"></i>
+            </div>
+            <h3 class="font-bold text-sm mb-1">Text in Text</h3>
+            <p class="text-xs text-gray-400">Zero-width character encoding</p>
+          </div>
+          <div class="mode-card glass-card rounded-2xl p-5 cursor-pointer hover:scale-[1.02] transition-all nav-link ripple-btn" data-target="image">
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center mb-3">
+              <i class="fas fa-image text-cyan-400 text-xl"></i>
+            </div>
+            <h3 class="font-bold text-sm mb-1">Text in Image</h3>
+            <p class="text-xs text-gray-400">LSB pixel encoding, PNG output</p>
+          </div>
+          <div class="mode-card glass-card rounded-2xl p-5 cursor-pointer hover:scale-[1.02] transition-all nav-link ripple-btn" data-target="audio">
+            <div class="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center mb-3">
+              <i class="fas fa-music text-pink-400 text-xl"></i>
+            </div>
+            <h3 class="font-bold text-sm mb-1">Text in Audio</h3>
+            <p class="text-xs text-gray-400">LSB audio steganography</p>
+          </div>
+          <div class="mode-card glass-card rounded-2xl p-5 cursor-pointer hover:scale-[1.02] transition-all nav-link ripple-btn" data-target="video">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center mb-3">
+              <i class="fas fa-video text-amber-400 text-xl"></i>
+            </div>
+            <h3 class="font-bold text-sm mb-1">Text in Video</h3>
+            <p class="text-xs text-gray-400">Frame metadata embedding</p>
+          </div>
+          <div class="mode-card glass-card rounded-2xl p-5 cursor-pointer hover:scale-[1.02] transition-all nav-link ripple-btn" data-target="doc">
+            <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-3">
+              <i class="fas fa-file-alt text-green-400 text-xl"></i>
+            </div>
+            <h3 class="font-bold text-sm mb-1">Text in Doc</h3>
+            <p class="text-xs text-gray-400">PDF / DOCX / PPTX metadata</p>
+          </div>
+          <div class="mode-card glass-card rounded-2xl p-5 cursor-pointer hover:scale-[1.02] transition-all nav-link ripple-btn" data-target="reveal">
+            <div class="w-12 h-12 rounded-xl bg-rose-500/20 flex items-center justify-center mb-3">
+              <i class="fas fa-eye text-rose-400 text-xl"></i>
+            </div>
+            <h3 class="font-bold text-sm mb-1">Reveal / Decode</h3>
+            <p class="text-xs text-gray-400">Extract hidden messages</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TEXT IN TEXT ===== -->
+      <section id="section-text" class="section hidden">
+        <div class="section-header mb-6">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-xl bg-violet-500/20 flex items-center justify-center">
+              <i class="fas fa-font text-violet-400"></i>
+            </div>
+            <h2 class="text-2xl font-bold">Text in Text</h2>
+          </div>
+          <p class="text-gray-400 text-sm hidden">Zero-width character encoding</p>
+        </div>
+
+        <!-- Tabs: Hide / Reveal -->
+        <div class="tab-group flex gap-2 mb-6 p-1 glass-card rounded-2xl w-fit">
+          <button class="tab-btn active ripple-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all" data-tab="txt-hide">
+            <i class="fas fa-eye-slash mr-2"></i>Hide
+          </button>
+          <button class="tab-btn ripple-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all" data-tab="txt-reveal">
+            <i class="fas fa-eye mr-2"></i>Reveal
+          </button>
+        </div>
+
+        <!-- Hide Tab -->
+        <div id="tab-txt-hide" class="tab-content">
+          <div class="grid gap-4">
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-align-left mr-2 text-violet-400"></i>Cover Text
+              </label>
+              <textarea id="txtCoverText" rows="4" placeholder="Enter the visible cover text here..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-violet-400 resize-none transition-colors"></textarea>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-lock mr-2 text-cyan-400"></i>Secret Message
+              </label>
+              <textarea id="txtSecretMsg" rows="3" placeholder="Enter your secret message..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-cyan-400 resize-none transition-colors"></textarea>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-key mr-2 text-amber-400"></i>Password <span class="text-gray-500 font-normal">(optional)</span>
+              </label>
+              <input type="password" id="txtHidePass" placeholder="Set a password to encrypt the secret..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
+            </div>
+            <button id="txtHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-violet-600 text-white font-bold shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-mask"></i> Hide Message
+            </button>
+            <div id="txtHideResult" class="hidden glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-green-400">
+                <i class="fas fa-check-circle mr-2"></i>Result (copy & share this text)
+              </label>
+              <div class="relative">
+                <textarea id="txtHideOutput" rows="4" readonly class="w-full bg-transparent border border-green-500/30 rounded-xl p-3 text-sm text-gray-200 focus:outline-none resize-none"></textarea>
+                <button id="txtHideCopy" class="ripple-btn absolute top-2 right-2 px-3 py-1.5 rounded-lg bg-green-500/20 text-green-400 text-xs font-semibold hover:bg-green-500/30 transition-colors">
+                  <i class="fas fa-copy mr-1"></i>Copy
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reveal Tab -->
+        <div id="tab-txt-reveal" class="tab-content hidden">
+          <div class="grid gap-4">
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-align-left mr-2 text-violet-400"></i>Stego Text (paste here)
+              </label>
+              <textarea id="txtRevealInput" rows="5" placeholder="Paste the text that contains a hidden message..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-violet-400 resize-none transition-colors"></textarea>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-key mr-2 text-amber-400"></i>Password <span class="text-gray-500 font-normal">(if protected)</span>
+              </label>
+              <input type="password" id="txtRevealPass" placeholder="Enter password if the message was encrypted..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
+            </div>
+            <button id="txtRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-violet-600 text-white font-bold shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-search"></i> Reveal Hidden Message
+            </button>
+            <div id="txtRevealResult" class="hidden glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-cyan-400">
+                <i class="fas fa-envelope-open mr-2"></i>Hidden Message
+              </label>
+              <div id="txtRevealOutput" class="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-4 text-sm text-gray-200 min-h-[60px] whitespace-pre-wrap"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TEXT IN IMAGE ===== -->
+      <section id="section-image" class="section hidden">
+        <div class="section-header mb-6">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+              <i class="fas fa-image text-cyan-400"></i>
+            </div>
+            <h2 class="text-2xl font-bold">Text in Image</h2>
+          </div>
+          <p class="text-gray-400 text-sm hidden">LSB pixel encoding, PNG output</p>
+        </div>
+
+        <div class="tab-group flex gap-2 mb-6 p-1 glass-card rounded-2xl w-fit">
+          <button class="tab-btn active ripple-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all" data-tab="img-hide">
+            <i class="fas fa-eye-slash mr-2"></i>Hide
+          </button>
+          <button class="tab-btn ripple-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all" data-tab="img-reveal">
+            <i class="fas fa-eye mr-2"></i>Reveal
+          </button>
+        </div>
+
+        <!-- Image Hide Tab -->
+        <div id="tab-img-hide" class="tab-content">
+          <div class="grid gap-4">
+            <!-- Image Input -->
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-3 text-gray-300">
+                <i class="fas fa-upload mr-2 text-cyan-400"></i>Select Image
+              </label>
+              <div class="flex gap-2 flex-wrap mb-3">
+                <label class="ripple-btn flex-1 min-w-[120px] py-2.5 rounded-xl glass-card text-center text-sm cursor-pointer hover:border-cyan-400 border border-transparent transition-colors">
+                  <i class="fas fa-folder-open mr-2 text-cyan-400"></i>Browse File
+                  <input type="file" id="imgFile" accept="image/*" class="hidden"/>
+                </label>
+                <button id="imgCameraBtn" class="ripple-btn flex-1 min-w-[120px] py-2.5 rounded-xl glass-card text-sm hover:border-violet-400 border border-transparent transition-colors">
+                  <i class="fas fa-camera mr-2 text-violet-400"></i>Take Photo
+                </button>
+              </div>
+              <div id="imgPreviewWrap" class="hidden relative rounded-xl overflow-hidden aspect-video bg-black/20">
+                <img id="imgPreview" class="w-full h-full object-contain" alt="Preview"/>
+                <canvas id="imgCanvas" class="hidden"></canvas>
+                <video id="imgCameraFeed" class="hidden w-full h-full object-cover" autoplay playsinline></video>
+                <div id="imgCameraControls" class="hidden absolute bottom-2 inset-x-2 flex justify-center gap-2">
+                  <button id="imgCapture" class="ripple-btn px-4 py-2 rounded-xl bg-violet-600 text-white text-sm font-semibold shadow-lg">
+                    <i class="fas fa-camera mr-1"></i>Capture
+                  </button>
+                  <button id="imgCameraClose" class="ripple-btn px-4 py-2 rounded-xl glass-card text-sm font-semibold">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-lock mr-2 text-cyan-400"></i>Secret Message
+              </label>
+              <textarea id="imgSecretMsg" rows="3" placeholder="Enter your secret message to hide in the image..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-cyan-400 resize-none transition-colors"></textarea>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-key mr-2 text-amber-400"></i>Password <span class="text-gray-500 font-normal">(optional)</span>
+              </label>
+              <input type="password" id="imgHidePass" placeholder="Protect with a password..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
+            </div>
+            <button id="imgHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-violet-600 text-white font-bold shadow-lg shadow-cyan-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-image"></i> Embed & Download PNG
+            </button>
+            <!-- Progress bar -->
+            <div id="imgProgress" class="hidden glass-card rounded-2xl p-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-400">Encoding pixels...</span>
+                <span id="imgProgressPct" class="text-xs text-cyan-400 font-bold">0%</span>
+              </div>
+              <div class="w-full bg-white/5 rounded-full h-2">
+                <div id="imgProgressBar" class="h-2 rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 transition-all duration-100" style="width:0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image Reveal Tab -->
+        <div id="tab-img-reveal" class="tab-content hidden">
+          <div class="grid gap-4">
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-3 text-gray-300">
+                <i class="fas fa-upload mr-2 text-cyan-400"></i>Select Stego Image (PNG)
+              </label>
+              <label class="ripple-btn block py-3 rounded-xl glass-card text-center text-sm cursor-pointer hover:border-cyan-400 border border-transparent transition-colors">
+                <i class="fas fa-folder-open mr-2 text-cyan-400"></i>Browse PNG File
+                <input type="file" id="imgRevealFile" accept="image/png" class="hidden"/>
+              </label>
+              <div id="imgRevealPreviewWrap" class="hidden mt-3 rounded-xl overflow-hidden max-h-48 bg-black/20">
+                <img id="imgRevealPreview" class="w-full h-full object-contain" alt="Stego image"/>
+              </div>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-key mr-2 text-amber-400"></i>Password <span class="text-gray-500 font-normal">(if protected)</span>
+              </label>
+              <input type="password" id="imgRevealPass" placeholder="Enter password if protected..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
+            </div>
+            <button id="imgRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-violet-600 text-white font-bold shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-search"></i> Extract Hidden Message
+            </button>
+            <div id="imgRevealResult" class="hidden glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-cyan-400">
+                <i class="fas fa-envelope-open mr-2"></i>Hidden Message
+              </label>
+              <div id="imgRevealOutput" class="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-4 text-sm text-gray-200 min-h-[60px] whitespace-pre-wrap"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TEXT IN AUDIO ===== -->
+      <section id="section-audio" class="section hidden">
+        <div class="section-header mb-6">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center">
+              <i class="fas fa-music text-pink-400"></i>
+            </div>
+            <h2 class="text-2xl font-bold">Text in Audio</h2>
+          </div>
+          <p class="text-gray-400 text-sm hidden">LSB audio steganography</p>
+        </div>
+
+        <div class="tab-group flex gap-2 mb-6 p-1 glass-card rounded-2xl w-fit">
+          <button class="tab-btn active ripple-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all" data-tab="aud-hide">
+            <i class="fas fa-eye-slash mr-2"></i>Hide
+          </button>
+          <button class="tab-btn ripple-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all" data-tab="aud-reveal">
+            <i class="fas fa-eye mr-2"></i>Reveal
+          </button>
+        </div>
+
+        <div id="tab-aud-hide" class="tab-content">
+          <div class="grid gap-4">
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-3 text-gray-300">
+                <i class="fas fa-upload mr-2 text-pink-400"></i>Select Audio File
+              </label>
+              <div class="flex gap-2 flex-wrap mb-3">
+                <label class="ripple-btn flex-1 min-w-[140px] py-2.5 rounded-xl glass-card text-center text-sm cursor-pointer hover:border-pink-400 border border-transparent transition-colors">
+                  <i class="fas fa-folder-open mr-2 text-pink-400"></i>Browse WAV/MP3
+                  <input type="file" id="audFile" accept="audio/*" class="hidden"/>
+                </label>
+                <button id="audRecordBtn" class="ripple-btn flex-1 min-w-[140px] py-2.5 rounded-xl glass-card text-sm hover:border-rose-400 border border-transparent transition-colors">
+                  <i class="fas fa-microphone mr-2 text-rose-400"></i>Record Audio
+                </button>
+              </div>
+              <div id="audPreviewWrap" class="hidden mt-2">
+                <audio id="audPreview" controls class="w-full rounded-xl"></audio>
+              </div>
+              <!-- Recording UI -->
+              <div id="audRecordingUI" class="hidden mt-3 glass-card rounded-xl p-4">
+                <div class="flex items-center gap-3 mb-3">
+                  <div id="audRecDot" class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+                  <span id="audRecTimer" class="text-sm font-mono text-red-400">00:00</span>
+                  <span class="text-xs text-gray-500">Recording...</span>
+                </div>
+                <div class="flex gap-2">
+                  <button id="audStopRecord" class="ripple-btn flex-1 py-2 rounded-xl bg-red-500/20 text-red-400 text-sm font-semibold hover:bg-red-500/30 transition-colors">
+                    <i class="fas fa-stop mr-1"></i>Stop
+                  </button>
+                  <button id="audCancelRecord" class="ripple-btn flex-1 py-2 rounded-xl glass-card text-sm font-semibold">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-lock mr-2 text-pink-400"></i>Secret Message
+              </label>
+              <textarea id="audSecretMsg" rows="3" placeholder="Enter secret message to embed in audio..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-pink-400 resize-none transition-colors"></textarea>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-key mr-2 text-amber-400"></i>Password <span class="text-gray-500 font-normal">(optional)</span>
+              </label>
+              <input type="password" id="audHidePass" placeholder="Protect with a password..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
+            </div>
+            <button id="audHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-600 to-violet-600 text-white font-bold shadow-lg shadow-pink-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-music"></i> Embed & Download WAV
+            </button>
+            <div id="audProgress" class="hidden glass-card rounded-2xl p-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-400">Encoding audio samples...</span>
+                <span id="audProgressPct" class="text-xs text-pink-400 font-bold">0%</span>
+              </div>
+              <div class="w-full bg-white/5 rounded-full h-2">
+                <div id="audProgressBar" class="h-2 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 transition-all duration-100" style="width:0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-aud-reveal" class="tab-content hidden">
+          <div class="grid gap-4">
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-3 text-gray-300">
+                <i class="fas fa-upload mr-2 text-pink-400"></i>Select Stego Audio (WAV)
+              </label>
+              <label class="ripple-btn block py-3 rounded-xl glass-card text-center text-sm cursor-pointer hover:border-pink-400 border border-transparent transition-colors">
+                <i class="fas fa-folder-open mr-2 text-pink-400"></i>Browse WAV File
+                <input type="file" id="audRevealFile" accept="audio/*" class="hidden"/>
+              </label>
+              <div id="audRevealPreviewWrap" class="hidden mt-2">
+                <audio id="audRevealPreview" controls class="w-full rounded-xl"></audio>
+              </div>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-key mr-2 text-amber-400"></i>Password <span class="text-gray-500 font-normal">(if protected)</span>
+              </label>
+              <input type="password" id="audRevealPass" placeholder="Enter password if protected..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
+            </div>
+            <button id="audRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-600 to-violet-600 text-white font-bold shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-search"></i> Extract Hidden Message
+            </button>
+            <div id="audRevealResult" class="hidden glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-pink-400">
+                <i class="fas fa-envelope-open mr-2"></i>Hidden Message
+              </label>
+              <div id="audRevealOutput" class="bg-pink-500/10 border border-pink-500/30 rounded-xl p-4 text-sm text-gray-200 min-h-[60px] whitespace-pre-wrap"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TEXT IN VIDEO ===== -->
+      <section id="section-video" class="section hidden">
+        <div class="section-header mb-6">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+              <i class="fas fa-video text-amber-400"></i>
+            </div>
+            <h2 class="text-2xl font-bold">Text in Video</h2>
+          </div>
+          <p class="text-gray-400 text-sm hidden">Frame metadata embedding</p>
+        </div>
+
+        <div class="tab-group flex gap-2 mb-6 p-1 glass-card rounded-2xl w-fit">
+          <button class="tab-btn active ripple-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all" data-tab="vid-hide">
+            <i class="fas fa-eye-slash mr-2"></i>Hide
+          </button>
+          <button class="tab-btn ripple-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all" data-tab="vid-reveal">
+            <i class="fas fa-eye mr-2"></i>Reveal
+          </button>
+        </div>
+
+        <div id="tab-vid-hide" class="tab-content">
+          <div class="grid gap-4">
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-3 text-gray-300">
+                <i class="fas fa-upload mr-2 text-amber-400"></i>Select Video File
+              </label>
+              <div class="flex gap-2 flex-wrap mb-3">
+                <label class="ripple-btn flex-1 min-w-[140px] py-2.5 rounded-xl glass-card text-center text-sm cursor-pointer hover:border-amber-400 border border-transparent transition-colors">
+                  <i class="fas fa-folder-open mr-2 text-amber-400"></i>Browse MP4
+                  <input type="file" id="vidFile" accept="video/*" class="hidden"/>
+                </label>
+                <button id="vidRecordBtn" class="ripple-btn flex-1 min-w-[140px] py-2.5 rounded-xl glass-card text-sm hover:border-amber-400 border border-transparent transition-colors">
+                  <i class="fas fa-video mr-2 text-amber-400"></i>Record Video
+                </button>
+              </div>
+              <div id="vidPreviewWrap" class="hidden mt-2 rounded-xl overflow-hidden bg-black">
+                <video id="vidPreview" controls class="w-full max-h-48" playsinline></video>
+              </div>
+              <!-- Video record UI -->
+              <div id="vidRecordingUI" class="hidden mt-3">
+                <div class="rounded-xl overflow-hidden bg-black aspect-video relative mb-3">
+                  <video id="vidCameraFeed" autoplay playsinline muted class="w-full h-full object-cover"></video>
+                  <div id="vidRecDot" class="hidden absolute top-3 left-3 flex items-center gap-1.5">
+                    <div class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></div>
+                    <span id="vidRecTimer" class="text-xs text-white font-mono bg-black/50 px-2 py-0.5 rounded">00:00</span>
+                  </div>
+                </div>
+                <div class="flex gap-2">
+                  <button id="vidStartRecord" class="ripple-btn flex-1 py-2 rounded-xl bg-red-500/20 text-red-400 text-sm font-semibold hover:bg-red-500/30 transition-colors">
+                    <i class="fas fa-circle mr-1"></i>Start
+                  </button>
+                  <button id="vidStopRecord" class="ripple-btn flex-1 py-2 rounded-xl bg-amber-500/20 text-amber-400 text-sm font-semibold hover:bg-amber-500/30 transition-colors hidden">
+                    <i class="fas fa-stop mr-1"></i>Stop
+                  </button>
+                  <button id="vidCancelRecord" class="ripple-btn flex-1 py-2 rounded-xl glass-card text-sm font-semibold">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-lock mr-2 text-amber-400"></i>Secret Message
+              </label>
+              <textarea id="vidSecretMsg" rows="3" placeholder="Enter secret message to embed in video..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 resize-none transition-colors"></textarea>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-key mr-2 text-amber-400"></i>Password <span class="text-gray-500 font-normal">(optional)</span>
+              </label>
+              <input type="password" id="vidHidePass" placeholder="Protect with a password..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
+            </div>
+            <!-- Info banner -->
+            <div class="glass-card rounded-2xl p-4 border border-amber-500/20 bg-amber-500/5">
+              <p class="text-xs text-amber-300 leading-relaxed">
+                <i class="fas fa-info-circle mr-2"></i>
+                The message is embedded in the video's binary metadata region. The output file keeps the same MP4 container. This approach works best for extracting within this tool.
+              </p>
+            </div>
+            <button id="vidHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 text-white font-bold shadow-lg shadow-amber-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-video"></i> Embed & Download Video
+            </button>
+          </div>
+        </div>
+
+        <div id="tab-vid-reveal" class="tab-content hidden">
+          <div class="grid gap-4">
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-3 text-gray-300">
+                <i class="fas fa-upload mr-2 text-amber-400"></i>Select Stego Video
+              </label>
+              <label class="ripple-btn block py-3 rounded-xl glass-card text-center text-sm cursor-pointer hover:border-amber-400 border border-transparent transition-colors">
+                <i class="fas fa-folder-open mr-2 text-amber-400"></i>Browse Video File
+                <input type="file" id="vidRevealFile" accept="video/*" class="hidden"/>
+              </label>
+              <div id="vidRevealPreviewWrap" class="hidden mt-2 rounded-xl overflow-hidden bg-black">
+                <video id="vidRevealPreview" controls class="w-full max-h-48" playsinline></video>
+              </div>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-key mr-2 text-amber-400"></i>Password <span class="text-gray-500 font-normal">(if protected)</span>
+              </label>
+              <input type="password" id="vidRevealPass" placeholder="Enter password if protected..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
+            </div>
+            <button id="vidRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 text-white font-bold shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-search"></i> Extract Hidden Message
+            </button>
+            <div id="vidRevealResult" class="hidden glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-amber-400">
+                <i class="fas fa-envelope-open mr-2"></i>Hidden Message
+              </label>
+              <div id="vidRevealOutput" class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-sm text-gray-200 min-h-[60px] whitespace-pre-wrap"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TEXT IN DOCUMENT ===== -->
+      <section id="section-doc" class="section hidden">
+        <div class="section-header mb-6">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+              <i class="fas fa-file-alt text-green-400"></i>
+            </div>
+            <h2 class="text-2xl font-bold">Text in Document</h2>
+          </div>
+          <p class="text-gray-400 text-sm hidden">PDF / DOCX / PPTX metadata</p>
+        </div>
+
+        <div class="tab-group flex gap-2 mb-6 p-1 glass-card rounded-2xl w-fit">
+          <button class="tab-btn active ripple-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all" data-tab="doc-hide">
+            <i class="fas fa-eye-slash mr-2"></i>Hide
+          </button>
+          <button class="tab-btn ripple-btn px-5 py-2 rounded-xl text-sm font-semibold transition-all" data-tab="doc-reveal">
+            <i class="fas fa-eye mr-2"></i>Reveal
+          </button>
+        </div>
+
+        <div id="tab-doc-hide" class="tab-content">
+          <div class="grid gap-4">
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-3 text-gray-300">
+                <i class="fas fa-upload mr-2 text-green-400"></i>Select Document
+              </label>
+              <label class="ripple-btn block py-3 rounded-xl glass-card text-center text-sm cursor-pointer hover:border-green-400 border border-transparent transition-colors">
+                <i class="fas fa-folder-open mr-2 text-green-400"></i>Browse PDF / DOCX / PPTX
+                <input type="file" id="docFile" accept=".pdf,.docx,.pptx,.doc,.ppt,.xlsx,.xls,.txt,.odt" class="hidden"/>
+              </label>
+              <div id="docPreviewWrap" class="hidden mt-3 glass-card rounded-xl p-3 flex items-center gap-3">
+                <div id="docFileIcon" class="w-10 h-10 rounded-xl flex items-center justify-center text-xl"></div>
+                <div>
+                  <div id="docFileName" class="text-sm font-semibold text-gray-200"></div>
+                  <div id="docFileSize" class="text-xs text-gray-500"></div>
+                </div>
+              </div>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-lock mr-2 text-green-400"></i>Secret Message
+              </label>
+              <textarea id="docSecretMsg" rows="3" placeholder="Enter secret message to embed in the document..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-green-400 resize-none transition-colors"></textarea>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-key mr-2 text-amber-400"></i>Password <span class="text-gray-500 font-normal">(optional)</span>
+              </label>
+              <input type="password" id="docHidePass" placeholder="Protect with a password..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
+            </div>
+            <div class="glass-card rounded-2xl p-4 border border-green-500/20 bg-green-500/5">
+              <p class="text-xs text-green-300 leading-relaxed">
+                <i class="fas fa-info-circle mr-2"></i>
+                The message is appended as a hidden metadata comment at the end of the file binary. The document remains fully functional. Extract only works within this tool.
+              </p>
+            </div>
+            <button id="docHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold shadow-lg shadow-green-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-file-export"></i> Embed & Download Document
+            </button>
+          </div>
+        </div>
+
+        <div id="tab-doc-reveal" class="tab-content hidden">
+          <div class="grid gap-4">
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-3 text-gray-300">
+                <i class="fas fa-upload mr-2 text-green-400"></i>Select Stego Document
+              </label>
+              <label class="ripple-btn block py-3 rounded-xl glass-card text-center text-sm cursor-pointer hover:border-green-400 border border-transparent transition-colors">
+                <i class="fas fa-folder-open mr-2 text-green-400"></i>Browse Document File
+                <input type="file" id="docRevealFile" accept=".pdf,.docx,.pptx,.doc,.ppt,.xlsx,.xls,.txt,.odt" class="hidden"/>
+              </label>
+              <div id="docRevealPreviewWrap" class="hidden mt-3 glass-card rounded-xl p-3 flex items-center gap-3">
+                <div id="docRevealFileIcon" class="w-10 h-10 rounded-xl flex items-center justify-center text-xl"></div>
+                <div>
+                  <div id="docRevealFileName" class="text-sm font-semibold text-gray-200"></div>
+                  <div id="docRevealFileSize" class="text-xs text-gray-500"></div>
+                </div>
+              </div>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-gray-300">
+                <i class="fas fa-key mr-2 text-amber-400"></i>Password <span class="text-gray-500 font-normal">(if protected)</span>
+              </label>
+              <input type="password" id="docRevealPass" placeholder="Enter password if protected..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
+            </div>
+            <button id="docRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-search"></i> Extract Hidden Message
+            </button>
+            <div id="docRevealResult" class="hidden glass-card rounded-2xl p-5">
+              <label class="block text-sm font-semibold mb-2 text-green-400">
+                <i class="fas fa-envelope-open mr-2"></i>Hidden Message
+              </label>
+              <div id="docRevealOutput" class="bg-green-500/10 border border-green-500/30 rounded-xl p-4 text-sm text-gray-200 min-h-[60px] whitespace-pre-wrap"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== UNIVERSAL REVEAL SECTION ===== -->
+      <section id="section-reveal" class="section hidden">
+        <div class="section-header mb-6">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center">
+              <i class="fas fa-eye text-rose-400"></i>
+            </div>
+            <h2 class="text-2xl font-bold">Reveal / Decode</h2>
+          </div>
+          <p class="text-gray-400 text-sm hidden">Extract hidden messages</p>
+        </div>
+
+        <div class="grid gap-4">
+          <!-- Drop zone -->
+          <div id="revealDropZone" class="glass-card rounded-2xl p-10 text-center border-2 border-dashed border-white/10 hover:border-rose-400/50 transition-colors cursor-pointer">
+            <div class="w-16 h-16 rounded-2xl bg-rose-500/10 flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-cloud-upload-alt text-rose-400 text-3xl"></i>
+            </div>
+            <p class="text-gray-300 font-semibold mb-1">Drop any file here</p>
+            <p class="text-sm text-gray-500">Image (PNG), Audio (WAV), Video (MP4), Document, or Text</p>
+            <input type="file" id="revealDropInput" class="hidden" accept="image/png,audio/*,video/*,.pdf,.docx,.pptx,.doc,.txt"/>
+          </div>
+          <div class="text-center text-gray-500 text-sm">— or paste text below —</div>
+          <div class="glass-card rounded-2xl p-5">
+            <textarea id="revealTextInput" rows="4" placeholder="Paste stego-text here to reveal hidden message..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-rose-400 resize-none transition-colors"></textarea>
+          </div>
+          <div class="glass-card rounded-2xl p-5">
+            <label class="block text-sm font-semibold mb-2 text-gray-300">
+              <i class="fas fa-key mr-2 text-amber-400"></i>Password <span class="text-gray-500 font-normal">(if protected)</span>
+            </label>
+            <input type="password" id="revealPass" placeholder="Enter password if the message was encrypted..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
+          </div>
+          <button id="revealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-pink-600 text-white font-bold shadow-lg shadow-rose-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+            <i class="fas fa-search-plus"></i> Reveal Hidden Message
+          </button>
+          <div id="revealResult" class="hidden glass-card rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <label class="text-sm font-semibold text-rose-400">
+                <i class="fas fa-envelope-open mr-2"></i>Hidden Message
+              </label>
+              <span id="revealDetectedType" class="text-xs px-2 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30"></span>
+            </div>
+            <div id="revealOutput" class="bg-rose-500/10 border border-rose-500/30 rounded-xl p-4 text-sm text-gray-200 min-h-[60px] whitespace-pre-wrap break-words"></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== TOAST NOTIFICATIONS ===== -->
+  <div id="toastContainer" class="fixed bottom-4 right-4 z-[9998] flex flex-col gap-2 pointer-events-none max-w-xs w-full"></div>
+
+  <!-- ===== BOTTOM NAVIGATION (MOBILE) ===== -->
+  <nav id="bottomNav" class="md:hidden fixed bottom-0 left-0 right-0 z-40 glass-bottom-nav">
+    <div class="flex justify-around items-center h-16">
+      <button class="bottom-nav-item nav-link flex flex-col items-center justify-center w-full h-full gap-0.5" data-target="home">
+        <i class="fas fa-home text-xl"></i>
+      </button>
+      <button class="bottom-nav-item nav-link flex flex-col items-center justify-center w-full h-full gap-0.5" data-target="text">
+        <i class="fas fa-font text-xl"></i>
+      </button>
+      <button class="bottom-nav-item nav-link flex flex-col items-center justify-center w-full h-full gap-0.5" data-target="image">
+        <i class="fas fa-image text-xl"></i>
+      </button>
+      <button class="bottom-nav-item nav-link flex flex-col items-center justify-center w-full h-full gap-0.5" data-target="audio">
+        <i class="fas fa-music text-xl"></i>
+      </button>
+      <button class="bottom-nav-item nav-link flex flex-col items-center justify-center w-full h-full gap-0.5" data-target="video">
+        <i class="fas fa-video text-xl"></i>
+      </button>
+      <button class="bottom-nav-item nav-link flex flex-col items-center justify-center w-full h-full gap-0.5" data-target="reveal">
+        <i class="fas fa-eye text-xl"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== PROCESSING OVERLAY ===== -->
+  <div id="processingOverlay" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div class="glass-card rounded-3xl p-8 flex flex-col items-center gap-4 max-w-xs w-full mx-4">
+      <div class="stego-anim">
+        <div class="stego-ring ring1"></div>
+        <div class="stego-ring ring2"></div>
+        <div class="stego-ring ring3"></div>
+        <i class="fas fa-lock stego-icon text-violet-400 text-2xl"></i>
+      </div>
+      <p class="text-sm text-gray-400 text-center" id="processingMsg">Hiding your secret...</p>
+      <div class="w-full bg-white/5 rounded-full h-1.5">
+        <div id="processingBar" class="h-1.5 rounded-full bg-violet-500 transition-all duration-300" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/crypto.js"></script>
+  <script src="js/stego-text.js"></script>
+  <script src="js/stego-image.js"></script>
+  <script src="js/stego-audio.js"></script>
+  <script src="js/stego-video.js"></script>
+  <script src="js/stego-doc.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
