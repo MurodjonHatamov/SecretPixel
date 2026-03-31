@@ -50,7 +50,7 @@
   <header class="sticky top-0 z-50 glass-header border-b border-white/10">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="logo-icon w-10 h-10 rounded-lg flex items-center justify-center bg-violet-600 shadow-lg shadow-violet-500/30 border border-violet-500/40">
+        <div class="logo-icon w-10 h-10 rounded-lg flex items-center justify-center bg-violet-600 shadow-none shadow-violet-500/30 border border-violet-500/40">
           <i class="fas fa-eye text-white text-lg"></i>
         </div>
         <div class="flex items-center">
@@ -122,7 +122,7 @@
               Embed secret messages into text, images, audio, video, and documents — all processed locally on your device.
             </p>
             <div class="flex flex-wrap gap-2">
-              <button class="ripple-btn nav-link px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl bg-violet-600 text-white font-semibold text-sm md:text-base shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 transition-all hover:scale-105" data-target="text">
+              <button class="ripple-btn nav-link px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl bg-violet-600 text-white font-semibold text-sm md:text-base shadow-none shadow-violet-500/30 hover:scale-105 transition-all" data-target="text">
                 <i class="fas fa-play mr-1 md:mr-2"></i><span class="hidden md:inline">Get Started</span><span class="md:hidden">Start</span>
               </button>
               <button class="ripple-btn nav-link px-4 py-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl glass-card text-gray-300 font-semibold text-sm md:text-base hover:scale-105 transition-all" data-target="reveal">
@@ -222,7 +222,7 @@
               </label>
               <input type="password" id="txtHidePass" placeholder="Set a password to encrypt the secret..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
             </div>
-            <button id="txtHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-violet-600 text-white font-bold shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+            <button id="txtHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-violet-600 text-white font-bold shadow-none shadow-violet-500/20 hover:shadow-violet-500/40 transition-all flex items-center justify-center gap-2">
               <i class="fas fa-mask"></i> Hide Message
             </button>
             <div id="txtHideResult" class="hidden glass-card rounded-2xl p-5">
@@ -254,7 +254,7 @@
               </label>
               <input type="password" id="txtRevealPass" placeholder="Enter password if the message was encrypted..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
             </div>
-            <button id="txtRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-violet-600 text-white font-bold shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+            <button id="txtRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-violet-600 text-white font-bold shadow-none transition-all flex items-center justify-center gap-2">
               <i class="fas fa-search"></i> Reveal Hidden Message
             </button>
             <div id="txtRevealResult" class="hidden glass-card rounded-2xl p-5">
@@ -310,7 +310,7 @@
                 <canvas id="imgCanvas" class="hidden"></canvas>
                 <video id="imgCameraFeed" class="hidden w-full h-full object-cover" autoplay playsinline></video>
                 <div id="imgCameraControls" class="hidden absolute bottom-2 inset-x-2 flex justify-center gap-2">
-                  <button id="imgCapture" class="ripple-btn px-4 py-2 rounded-xl bg-violet-600 text-white text-sm font-semibold shadow-lg">
+                  <button id="imgCapture" class="ripple-btn px-4 py-2 rounded-xl bg-violet-600 text-white text-sm font-semibold shadow-none">
                     <i class="fas fa-camera mr-1"></i>Capture
                   </button>
                   <button id="imgCameraClose" class="ripple-btn px-4 py-2 rounded-xl glass-card text-sm font-semibold">
@@ -331,7 +331,7 @@
               </label>
               <input type="password" id="imgHidePass" placeholder="Protect with a password..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
             </div>
-            <button id="imgHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-violet-600 text-white font-bold shadow-lg shadow-cyan-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+            <button id="imgHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-violet-600 text-white font-bold shadow-none shadow-cyan-500/20 transition-all flex items-center justify-center gap-2">
               <i class="fas fa-image"></i> Embed & Download PNG
             </button>
             <!-- Progress bar -->
@@ -368,7 +368,7 @@
               </label>
               <input type="password" id="imgRevealPass" placeholder="Enter password if protected..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
             </div>
-            <button id="imgRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-violet-600 text-white font-bold shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+            <button id="imgRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-violet-600 text-white font-bold shadow-none transition-all flex items-center justify-center gap-2">
               <i class="fas fa-search"></i> Extract Hidden Message
             </button>
             <div id="imgRevealResult" class="hidden glass-card rounded-2xl p-5">
@@ -449,7 +449,7 @@
               </label>
               <input type="password" id="audHidePass" placeholder="Protect with a password..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
             </div>
-            <button id="audHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-600 to-violet-600 text-white font-bold shadow-lg shadow-pink-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+            <button id="audHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-600 to-violet-600 text-white font-bold shadow-none shadow-pink-500/20 transition-all flex items-center justify-center gap-2">
               <i class="fas fa-music"></i> Embed & Download WAV
             </button>
             <div id="audProgress" class="hidden glass-card rounded-2xl p-4">
@@ -484,7 +484,7 @@
               </label>
               <input type="password" id="audRevealPass" placeholder="Enter password if protected..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
             </div>
-            <button id="audRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-600 to-violet-600 text-white font-bold shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+            <button id="audRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-600 to-violet-600 text-white font-bold shadow-none transition-all flex items-center justify-center gap-2">
               <i class="fas fa-search"></i> Extract Hidden Message
             </button>
             <div id="audRevealResult" class="hidden glass-card rounded-2xl p-5">
@@ -577,7 +577,7 @@
                 The message is embedded in the video's binary metadata region. The output file keeps the same MP4 container. This approach works best for extracting within this tool.
               </p>
             </div>
-            <button id="vidHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 text-white font-bold shadow-lg shadow-amber-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+            <button id="vidHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 text-white font-bold shadow-none shadow-amber-500/20 transition-all flex items-center justify-center gap-2">
               <i class="fas fa-video"></i> Embed & Download Video
             </button>
           </div>
@@ -603,7 +603,7 @@
               </label>
               <input type="password" id="vidRevealPass" placeholder="Enter password if protected..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
             </div>
-            <button id="vidRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 text-white font-bold shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+            <button id="vidRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-600 to-orange-600 text-white font-bold shadow-none transition-all flex items-center justify-center gap-2">
               <i class="fas fa-search"></i> Extract Hidden Message
             </button>
             <div id="vidRevealResult" class="hidden glass-card rounded-2xl p-5">
@@ -673,7 +673,7 @@
                 The message is appended as a hidden metadata comment at the end of the file binary. The document remains fully functional. Extract only works within this tool.
               </p>
             </div>
-            <button id="docHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold shadow-lg shadow-green-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+            <button id="docHideBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold shadow-none shadow-green-500/20 transition-all flex items-center justify-center gap-2">
               <i class="fas fa-file-export"></i> Embed & Download Document
             </button>
           </div>
@@ -703,7 +703,7 @@
               </label>
               <input type="password" id="docRevealPass" placeholder="Enter password if protected..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
             </div>
-            <button id="docRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+            <button id="docRevealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold shadow-none transition-all flex items-center justify-center gap-2">
               <i class="fas fa-search"></i> Extract Hidden Message
             </button>
             <div id="docRevealResult" class="hidden glass-card rounded-2xl p-5">
@@ -748,7 +748,7 @@
             </label>
             <input type="password" id="revealPass" placeholder="Enter password if the message was encrypted..." class="w-full bg-transparent border border-white/10 rounded-xl p-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors"/>
           </div>
-          <button id="revealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-pink-600 text-white font-bold shadow-lg shadow-rose-500/20 hover:scale-[1.01] transition-all flex items-center justify-center gap-2">
+          <button id="revealBtn" class="ripple-btn w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-pink-600 text-white font-bold shadow-none shadow-rose-500/20 transition-all flex items-center justify-center gap-2">
             <i class="fas fa-search-plus"></i> Reveal Hidden Message
           </button>
           <div id="revealResult" class="hidden glass-card rounded-2xl p-5">
