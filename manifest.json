@@ -2,25 +2,41 @@
   "name": "SecretPixel",
   "short_name": "SecretPixel",
   "description": "Hide your secrets in plain sight. Steganography web app.",
-  "start_url": "/",
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#030712",
   "theme_color": "#7c3aed",
-  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%237c3aed' rx='80' width='512' height='512'/><path fill='white' d='M256 128c-70.7 0-128 57.3-128 128 0 35.3 14.3 67.3 38 90.7V390c0 17.7 14.3 32 32 32h36c17.7 0 32-14.3 32-32v-43.3c23.7-23.3 38-55.3 38-90.7 0-70.7-57.3-128-128-128zm-32 206c-38.7 0-70-31.3-70-70s31.3-70 70-70 70 31.3 70 70-31.3 70-70 70z'/></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%237c3aed' rx='90' width='512' height='512'/><circle cx='256' cy='200' r='70' fill='white'/><circle cx='256' cy='350' r='90' fill='white'/></svg>",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%237c3aed' rx='30' width='192' height='192'/><path fill='white' d='M96 48c-26.5 0-48 21.5-48 48 0 13.2 5.4 25.2 14.2 34V154c0 6.6 5.4 12 12 12h12c6.6 0 12-5.4 12-12v-16.2c8.8-8.7 14.2-20.7 14.2-33.8 0-26.5-21.5-48-48-48zm-12 77c-14.5 0-26-11.5-26-26s11.5-26 26-26 26 11.5 26 26-11.5 26-26 26z'/></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%237c3aed' rx='35' width='192' height='192'/><circle cx='96' cy='75' r='26' fill='white'/><circle cx='96' cy='130' r='34' fill='white'/></svg>",
       "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 144 144'><rect fill='%237c3aed' rx='26' width='144' height='144'/><circle cx='72' cy='56' r='20' fill='white'/><circle cx='72' cy='98' r='25' fill='white'/></svg>",
+      "sizes": "144x144",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%237c3aed' rx='17' width='96' height='96'/><circle cx='48' cy='37' r='13' fill='white'/><circle cx='48' cy='65' r='17' fill='white'/></svg>",
+      "sizes": "96x96",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ],
   "categories": ["utilities", "security"],
-  "lang": "en"
+  "lang": "en",
+  "dir": "ltr",
+  "iarc_rating_id": "unknown"
 }
